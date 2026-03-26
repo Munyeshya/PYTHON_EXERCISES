@@ -47,6 +47,22 @@
             max-width: 100%;
         }
 
+        .top-strip {
+            padding: 1rem 0 0.25rem;
+        }
+
+        .top-strip h1 {
+            font-size: 1.15rem;
+            margin-bottom: 0.1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .top-strip p {
+            margin-bottom: 0;
+            color: var(--ulk-muted);
+            font-size: 0.82rem;
+        }
+
         .hero-panel,
         .content-card {
             border: 0;
@@ -167,9 +183,8 @@
     <div class="page-shell">
         <nav class="navbar navbar-expand-lg brand-bar shadow-sm">
             <div class="container py-2">
-                <a class="navbar-brand d-flex align-items-center gap-3 text-white" href="{% url 'polls:poll-list' %}">
+                <a class="navbar-brand d-flex align-items-center gap-3 text-white" href="{% url 'polls:poll-list' %}" aria-label="Home">
                     <img class="brand-logo" src="https://ulk.ac.rw/wp-content/uploads/2016/06/imageedit_1_4457785095.png" alt="ULK logo">
-                    <span class="fw-semibold d-none d-md-inline"><i class="bi bi-bar-chart-line me-1"></i>Polling Hub</span>
                 </a>
                 <div class="ms-auto">
                     <a class="btn btn-brand btn-sm" href="{% url 'polls:admin-login' %}"><i class="bi bi-shield-lock me-1"></i>Admin Portal</a>
@@ -178,11 +193,17 @@
         </nav>
 
         <main class="container py-4">
+            <div class="top-strip">
+                <h1><i class="bi bi-bar-chart-line me-1 text-success"></i>{% block shell_title %}ULK Polling Hub{% endblock %}</h1>
+                <p>{% block shell_subtitle %}Vote securely and review poll results in one place.{% endblock %}</p>
+            </div>
+
             {% if messages %}
                 <div class="mb-4">
                     {% for message in messages %}
-                        <div class="alert alert-{{ message.tags|default:'info' }} shadow-sm" role="alert">
+                        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
                             {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
                 </div>
