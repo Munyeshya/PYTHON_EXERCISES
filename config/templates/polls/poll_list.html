@@ -11,7 +11,7 @@
             <p class="lead mb-0">Polls and choices are managed by administrators in Django admin, while students vote here using only their roll number.</p>
         </div>
         <div class="col-lg-4 text-lg-end">
-            <a href="/admin/" class="btn btn-brand btn-lg">Go to Admin</a>
+            <a href="{% url 'polls:admin-login' %}" class="btn btn-brand btn-lg">Admin Portal</a>
         </div>
     </div>
 </section>
@@ -58,8 +58,8 @@
         {% else %}
             <div class="text-center py-5">
                 <h3 class="h4">No polls yet</h3>
-                <p class="text-secondary">An administrator can publish a poll from the Django admin dashboard.</p>
-                <a href="/admin/" class="btn btn-brand">Open Admin</a>
+                <p class="text-secondary">An administrator can publish a poll from the custom admin portal or the default Django admin.</p>
+                <a href="{% url 'polls:admin-login' %}" class="btn btn-brand">Open Portal</a>
             </div>
         {% endif %}
     </div>

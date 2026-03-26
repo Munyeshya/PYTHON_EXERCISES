@@ -28,7 +28,7 @@
                     </div>
                     <div class="d-flex flex-column gap-2">
                         <a href="{% url 'polls:poll-results' poll.pk %}" class="btn btn-outline-success">View Results</a>
-                        <a href="/admin/" class="btn btn-outline-primary">Admin Dashboard</a>
+                        <a href="{% url 'polls:admin-login' %}" class="btn btn-outline-primary">Admin Portal</a>
                     </div>
                 </div>
             </div>

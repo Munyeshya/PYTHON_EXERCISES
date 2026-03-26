@@ -1,0 +1,117 @@
+{% extends "polls_admin/base.html" %}
+
+{% block title %}Dashboard | ULK Polling Portal{% endblock %}
+
+{% block content %}
+<section class="portal-card hero-strip p-4 p-lg-5 mb-5">
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-center">
+        <div>
+            <p class="text-uppercase fw-bold mb-2" style="letter-spacing: .08em; color: #f4c542;">Admin Workspace</p>
+            <h1 class="display-6 fw-bold mb-3">Manage polls without touching the default Django admin.</h1>
+            <p class="lead mb-0">Create ballots, edit choices, and review voting activity from this custom portal.</p>
+        </div>
+        <div>
+            <a href="{% url 'polls:admin-poll-create' %}" class="btn btn-ulk btn-lg">Create Poll</a>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="portal-card card h-100">
+            <div class="card-body p-4">
+                <p class="section-tag mb-2">Polls</p>
+                <h2 class="display-6 fw-bold">{{ poll_count }}</h2>
+                <p class="text-secondary mb-0">Published and draft polls managed in the portal.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="portal-card card h-100">
+            <div class="card-body p-4">
+                <p class="section-tag mb-2">Choices</p>
+                <h2 class="display-6 fw-bold">{{ choice_count }}</h2>
+                <p class="text-secondary mb-0">Available answer options across all polls.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="portal-card card h-100">
+            <div class="card-body p-4">
+                <p class="section-tag mb-2">Votes</p>
+                <h2 class="display-6 fw-bold">{{ vote_count }}</h2>
+                <p class="text-secondary mb-0">Recorded student votes linked to roll numbers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-lg-8">
+        <div class="portal-card card">
+            <div class="card-body p-4 p-lg-5">
+                <p class="section-tag mb-1">Poll Directory</p>
+                <h2 class="h3 mb-4">All polls</h2>
+                {% if polls %}
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Choices</th>
+                                    <th>Votes</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for poll in polls %}
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold">{{ poll.title }}</div>
+                                            <div class="small text-secondary">Ends {{ poll.end_date|date:"M d, Y H:i" }}</div>
+                                        </td>
+                                        <td>
+                                            {% if poll.is_active %}
+                                                <span class="badge text-bg-success">Active</span>
+                                            {% elif poll.is_published %}
+                                                <span class="badge text-bg-secondary">Scheduled or closed</span>
+                                            {% else %}
+                                                <span class="badge text-bg-warning">Draft</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ poll.choices.count }}</td>
+                                        <td>{{ poll.total_votes }}</td>
+                                        <td class="text-end">
+                                            <a class="btn btn-sm btn-outline-success" href="{% url 'polls:admin-poll-detail' poll.pk %}">Open</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-secondary mb-0">No polls have been created yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="portal-card card h-100">
+            <div class="card-body p-4">
+                <p class="section-tag mb-1">Recent Activity</p>
+                <h2 class="h4 mb-4">Latest votes</h2>
+                {% for vote in recent_votes %}
+                    <div class="border rounded-4 p-3 mb-3">
+                        <div class="fw-semibold">{{ vote.roll_number }}</div>
+                        <div class="small text-secondary">{{ vote.poll.title }}</div>
+                        <div class="small text-secondary">Selected: {{ vote.choice.text }}</div>
+                    </div>
+                {% empty %}
+                    <p class="text-secondary mb-0">Votes will appear here once students start participating.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

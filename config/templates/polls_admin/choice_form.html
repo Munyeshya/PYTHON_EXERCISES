@@ -1,0 +1,25 @@
+{% extends "polls_admin/base.html" %}
+
+{% block title %}{{ page_title }} | ULK Polling Portal{% endblock %}
+
+{% block content %}
+<section class="portal-card card mx-auto" style="max-width: 760px;">
+    <div class="card-body p-4 p-lg-5">
+        <p class="section-tag mb-1">{{ page_title }}</p>
+        <h1 class="h2 mb-3">{{ poll.title }}</h1>
+        <p class="text-secondary mb-4">Maintain the answer options available in this poll.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="form-label fw-semibold" for="text">Choice Text</label>
+                <input class="form-control" type="text" id="text" name="text" value="{{ choice_value|default:'' }}" required>
+            </div>
+            <div class="d-flex gap-3">
+                <button class="btn btn-ulk" type="submit">Save Choice</button>
+                <a class="btn btn-outline-secondary" href="{% url 'polls:admin-poll-detail' poll.pk %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

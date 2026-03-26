@@ -1,0 +1,89 @@
+{% extends "polls_admin/base.html" %}
+
+{% block title %}{{ poll.title }} | ULK Polling Portal{% endblock %}
+
+{% block content %}
+<section class="portal-card card mb-4">
+    <div class="card-body p-4 p-lg-5">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-4">
+                <img
+                    src="{% if poll.cover_image %}{{ poll.cover_image }}{% else %}https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg{% endif %}"
+                    alt="{{ poll.title }}"
+                    class="img-fluid rounded-4 w-100"
+                    style="max-height: 280px; object-fit: cover;"
+                >
+            </div>
+            <div class="col-lg-8">
+                <p class="section-tag mb-1">Poll Management</p>
+                <h1 class="h2 mb-3">{{ poll.title }}</h1>
+                <p class="text-secondary">{{ poll.description }}</p>
+                <div class="d-flex flex-wrap gap-3 mb-4 small text-secondary">
+                    <span>Choices: {{ poll.choices.count }}</span>
+                    <span>Total votes: {{ poll.total_votes }}</span>
+                    <span>Ends: {{ poll.end_date|date:"M d, Y H:i" }}</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-ulk" href="{% url 'polls:admin-choice-create' poll.pk %}">Add Choice</a>
+                    <a class="btn btn-outline-success" href="{% url 'polls:admin-poll-update' poll.pk %}">Edit Poll</a>
+                    <a class="btn btn-outline-primary" href="{% url 'polls:poll-detail' poll.pk %}">View Public Page</a>
+                    <form method="post" action="{% url 'polls:admin-poll-delete' poll.pk %}" onsubmit="return confirm('Delete this poll and all related data?');">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-danger" type="submit">Delete Poll</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="portal-card card">
+            <div class="card-body p-4">
+                <p class="section-tag mb-1">Choices</p>
+                <h2 class="h4 mb-4">Voting options</h2>
+                {% for choice in poll.choices.all %}
+                    <div class="border rounded-4 p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center gap-3">
+                            <div>
+                                <div class="fw-semibold">{{ choice.text }}</div>
+                                <div class="small text-secondary">{{ choice.votes }} vote{{ choice.votes|pluralize }}</div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-sm btn-outline-success" href="{% url 'polls:admin-choice-update' choice.pk %}">Edit</a>
+                                <form method="post" action="{% url 'polls:admin-choice-delete' choice.pk %}" onsubmit="return confirm('Delete this choice?');">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="progress mt-3" style="height: 10px;">
+                            <div class="progress-bar bg-success" style="width: {% widthratio choice.votes total_votes_safe 100 %}%"></div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-secondary mb-0">No choices added yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="portal-card card">
+            <div class="card-body p-4">
+                <p class="section-tag mb-1">Vote Log</p>
+                <h2 class="h4 mb-4">Submitted roll numbers</h2>
+                {% for vote in votes %}
+                    <div class="border rounded-4 p-3 mb-3">
+                        <div class="fw-semibold">{{ vote.roll_number }}</div>
+                        <div class="small text-secondary">Choice: {{ vote.choice.text }}</div>
+                        <div class="small text-secondary">Time: {{ vote.voted_at|date:"M d, Y H:i" }}</div>
+                    </div>
+                {% empty %}
+                    <p class="text-secondary mb-0">No votes have been submitted for this poll yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
