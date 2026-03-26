@@ -83,6 +83,25 @@
                 {% empty %}
                     <p class="text-secondary small-copy mb-0">No submissions have been recorded yet.</p>
                 {% endfor %}
+
+                {% if votes.paginator.num_pages > 1 %}
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <span class="small text-secondary">Page {{ votes.number }} of {{ votes.paginator.num_pages }}</span>
+                        <div class="d-flex gap-2">
+                            {% if votes.has_previous %}
+                                <a class="btn btn-sm btn-outline-secondary" href="?vote_page={{ votes.previous_page_number }}"><i class="bi bi-chevron-left"></i></a>
+                            {% else %}
+                                <button class="btn btn-sm btn-outline-secondary" type="button" disabled><i class="bi bi-chevron-left"></i></button>
+                            {% endif %}
+
+                            {% if votes.has_next %}
+                                <a class="btn btn-sm btn-outline-secondary" href="?vote_page={{ votes.next_page_number }}"><i class="bi bi-chevron-right"></i></a>
+                            {% else %}
+                                <button class="btn btn-sm btn-outline-secondary" type="button" disabled><i class="bi bi-chevron-right"></i></button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

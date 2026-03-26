@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -153,11 +154,17 @@ def admin_poll_create_view(request):
 @superuser_required
 def admin_poll_detail_view(request, pk):
     poll = get_object_or_404(Poll.objects.prefetch_related("choices", "votes"), pk=pk)
-    votes = Vote.objects.filter(poll=poll).select_related("choice").order_by("-voted_at")
+    vote_queryset = Vote.objects.filter(poll=poll).select_related("choice").order_by("-voted_at")
+    vote_paginator = Paginator(vote_queryset, 3)
+    votes = vote_paginator.get_page(request.GET.get("vote_page"))
     return render(
         request,
         "polls_admin/poll_detail.html",
-        {"poll": poll, "votes": votes, "total_votes_safe": poll.total_votes or 1},
+        {
+            "poll": poll,
+            "votes": votes,
+            "total_votes_safe": poll.total_votes or 1,
+        },
     )
 
 
