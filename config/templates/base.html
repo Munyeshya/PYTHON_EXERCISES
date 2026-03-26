@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ULK Polling Hub{% endblock %}</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    <style>
+        :root {
+            --ulk-green: #0f6b3c;
+            --ulk-gold: #f4c542;
+            --ulk-deep: #0b2239;
+            --ulk-muted: #6b7280;
+            --ulk-light: #f8fafc;
+        }
+
+        body {
+            background:
+                linear-gradient(rgba(11, 34, 57, 0.84), rgba(11, 34, 57, 0.78)),
+                url("https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg") center/cover fixed;
+            color: #102133;
+            min-height: 100vh;
+        }
+
+        .page-shell {
+            background: rgba(248, 250, 252, 0.95);
+            backdrop-filter: blur(10px);
+            min-height: 100vh;
+        }
+
+        .brand-bar {
+            background: linear-gradient(90deg, var(--ulk-green), #15803d);
+        }
+
+        .brand-logo {
+            width: 170px;
+            max-width: 100%;
+        }
+
+        .hero-panel,
+        .content-card {
+            border: 0;
+            border-radius: 1.25rem;
+            box-shadow: 0 1rem 2.5rem rgba(15, 23, 42, 0.12);
+        }
+
+        .hero-panel {
+            background:
+                linear-gradient(135deg, rgba(15, 107, 60, 0.94), rgba(11, 34, 57, 0.92)),
+                url("https://ulk.ac.rw/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-16.22.23-550x400.jpeg") center/cover;
+            color: white;
+        }
+
+        .btn-brand {
+            background-color: var(--ulk-gold);
+            border-color: var(--ulk-gold);
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .btn-brand:hover {
+            background-color: #e9b400;
+            border-color: #e9b400;
+            color: #111827;
+        }
+
+        .section-label {
+            color: var(--ulk-green);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .status-badge {
+            border-radius: 999px;
+            padding: 0.35rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.12);
+            color: #166534;
+        }
+
+        .status-closed {
+            background: rgba(239, 68, 68, 0.12);
+            color: #b91c1c;
+        }
+
+        .choice-row {
+            border: 1px solid rgba(15, 107, 60, 0.12);
+            border-radius: 1rem;
+            padding: 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .choice-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="page-shell">
+        <nav class="navbar navbar-expand-lg brand-bar shadow-sm">
+            <div class="container py-2">
+                <a class="navbar-brand d-flex align-items-center gap-3 text-white" href="{% url 'polls:poll-list' %}">
+                    <img class="brand-logo" src="https://ulk.ac.rw/wp-content/uploads/2016/06/imageedit_1_4457785095.png" alt="ULK logo">
+                    <span class="fw-semibold d-none d-md-inline">Polling Hub</span>
+                </a>
+                <div class="ms-auto">
+                    <a class="btn btn-brand" href="/admin/">Admin Login</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container py-5">
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags|default:'info' }} shadow-sm" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

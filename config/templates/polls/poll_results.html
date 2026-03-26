@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ poll.title }} Results | ULK Polling Hub{% endblock %}
+
+{% block content %}
+<section class="content-card card mb-4">
+    <div class="card-body p-4 p-lg-5">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-4">
+            <div>
+                <p class="section-label mb-1">Poll Results</p>
+                <h1 class="display-6 fw-bold mb-3">{{ poll.title }}</h1>
+                <p class="lead text-secondary mb-2">{{ poll.description }}</p>
+                <p class="mb-0 text-secondary">Total votes cast: {{ poll.total_votes }}</p>
+            </div>
+            <div class="d-flex flex-column gap-2">
+                <a href="{% url 'polls:poll-detail' poll.pk %}" class="btn btn-outline-success">Back to Poll</a>
+                <a href="{% url 'polls:poll-list' %}" class="btn btn-outline-secondary">All Polls</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content-card card">
+    <div class="card-body p-4 p-lg-5">
+        {% for choice in poll.choices.all %}
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-semibold">{{ choice.text }}</span>
+                    <span class="text-secondary">{{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
+                </div>
+                <div class="progress" style="height: 12px;">
+                    <div
+                        class="progress-bar bg-success"
+                        role="progressbar"
+                        style="width: {% widthratio choice.votes total_votes_safe 100 %}%"
+                        aria-valuenow="{{ choice.votes }}"
+                        aria-valuemin="0"
+                        aria-valuemax="{{ total_votes_safe }}"
+                    ></div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-secondary mb-0">No choices have been added to this poll yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

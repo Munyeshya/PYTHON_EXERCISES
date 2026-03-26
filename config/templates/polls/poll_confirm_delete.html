@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Poll | ULK Polling Hub{% endblock %}
+
+{% block content %}
+<section class="content-card card mx-auto" style="max-width: 720px;">
+    <div class="card-body p-4 p-lg-5">
+        <p class="section-label mb-1">Delete Poll</p>
+        <h1 class="h2 mb-3">Remove "{{ object.title }}"?</h1>
+        <p class="text-secondary">This will permanently remove the poll and all its choices.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit" class="btn btn-danger">Delete Poll</button>
+                <a href="{{ object.get_absolute_url }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
