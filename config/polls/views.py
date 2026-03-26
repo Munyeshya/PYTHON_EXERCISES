@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
-from django.db.models import F
+from django.db.models import F, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods, require_POST
@@ -24,14 +24,40 @@ class PollListView(ListView):
     model = Poll
     template_name = "polls/poll_list.html"
     context_object_name = "polls"
+    paginate_by = 6
 
     def get_queryset(self):
         now = timezone.now()
-        return (
+        queryset = (
             Poll.objects.filter(is_published=True, start_date__lte=now)
             .prefetch_related("choices")
             .order_by("-created_at")
         )
+        search_query = self.request.GET.get("q", "").strip()
+        status = self.request.GET.get("status", "").strip()
+
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            )
+
+        if status == "active":
+            queryset = queryset.filter(end_date__gte=now)
+        elif status == "closed":
+            queryset = queryset.filter(end_date__lt=now)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_query"] = self.request.GET.get("q", "").strip()
+        context["status_filter"] = self.request.GET.get("status", "").strip()
+        return context
+
+    def paginate_queryset(self, queryset, page_size):
+        paginator = self.get_paginator(queryset, page_size, orphans=self.get_paginate_orphans(), allow_empty_first_page=self.get_allow_empty())
+        page = paginator.get_page(self.request.GET.get(self.page_kwarg))
+        return paginator, page, page.object_list, page.has_other_pages()
 
 
 class PollDetailView(DetailView):
