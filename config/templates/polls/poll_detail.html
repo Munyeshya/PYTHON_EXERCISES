@@ -8,7 +8,7 @@
         <div class="row g-4 align-items-center">
             <div class="col-lg-4">
                 <img
-                    src="{% if poll.cover_image %}{{ poll.cover_image }}{% else %}https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg{% endif %}"
+                    src="{% if poll.cover_image %}{{ poll.cover_image_src }}{% else %}https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg{% endif %}"
                     alt="{{ poll.title }}"
                     class="img-fluid rounded-4 shadow-sm w-100"
                     style="max-height: 240px; object-fit: cover;"

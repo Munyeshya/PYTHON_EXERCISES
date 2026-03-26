@@ -9,7 +9,7 @@
         <h1 class="h4 mb-3">{% if poll %}Update poll information{% else %}Create a poll{% endif %}</h1>
         <p class="text-secondary small-copy mb-4">Fill in the main details and set the voting period.</p>
 
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row g-4">
                 <div class="col-md-6">
@@ -17,8 +17,11 @@
                     <input class="form-control" type="text" id="title" name="title" value="{{ form_data.title|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold" for="cover_image">Cover Image URL</label>
-                    <input class="form-control" type="url" id="cover_image" name="cover_image" value="{{ form_data.cover_image|default:'' }}">
+                    <label class="form-label fw-semibold" for="cover_image">Cover Image</label>
+                    <input class="form-control" type="file" id="cover_image" name="cover_image" accept="image/*">
+                    {% if poll and poll.cover_image %}
+                        <div class="form-text small-copy">Current file: {{ poll.cover_image.name }}</div>
+                    {% endif %}
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-semibold" for="description">Description</label>

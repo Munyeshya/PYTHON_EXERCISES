@@ -6,7 +6,7 @@ from django.utils import timezone
 class Poll(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    cover_image = models.URLField(blank=True)
+    cover_image = models.FileField(upload_to="poll_covers/", blank=True)
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField()
     is_published = models.BooleanField(default=True)
@@ -21,6 +21,20 @@ class Poll(models.Model):
 
     def get_absolute_url(self):
         return reverse("polls:poll-detail", kwargs={"pk": self.pk})
+
+    @property
+    def cover_image_src(self):
+        if not self.cover_image:
+            return ""
+
+        cover_name = str(self.cover_image)
+        if cover_name.startswith(("http://", "https://")):
+            return cover_name
+
+        try:
+            return self.cover_image.url
+        except ValueError:
+            return cover_name
 
     @property
     def total_votes(self):

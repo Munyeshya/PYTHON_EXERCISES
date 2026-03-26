@@ -144,7 +144,7 @@ def admin_poll_create_view(request):
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
-        cover_image = request.POST.get("cover_image", "").strip()
+        cover_image = request.FILES.get("cover_image")
         start_date_raw = request.POST.get("start_date", "").strip()
         end_date_raw = request.POST.get("end_date", "").strip()
         is_published = request.POST.get("is_published") == "on"
@@ -204,7 +204,7 @@ def admin_poll_update_view(request, pk):
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
-        cover_image = request.POST.get("cover_image", "").strip()
+        cover_image = request.FILES.get("cover_image")
         start_date_raw = request.POST.get("start_date", "").strip()
         end_date_raw = request.POST.get("end_date", "").strip()
         is_published = request.POST.get("is_published") == "on"
@@ -227,7 +227,8 @@ def admin_poll_update_view(request, pk):
 
         poll.title = title
         poll.description = description
-        poll.cover_image = cover_image
+        if cover_image:
+            poll.cover_image = cover_image
         poll.start_date = start_date
         poll.end_date = end_date
         poll.is_published = is_published
@@ -238,7 +239,6 @@ def admin_poll_update_view(request, pk):
     form_data = {
         "title": poll.title,
         "description": poll.description,
-        "cover_image": poll.cover_image,
         "start_date": timezone.localtime(poll.start_date).strftime("%Y-%m-%dT%H:%M"),
         "end_date": timezone.localtime(poll.end_date).strftime("%Y-%m-%dT%H:%M"),
         "is_published": poll.is_published,
