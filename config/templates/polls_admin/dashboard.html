@@ -110,6 +110,25 @@
                 {% empty %}
                     <p class="text-secondary small-copy mb-0">Recent submissions will appear here.</p>
                 {% endfor %}
+
+                {% if recent_votes.paginator.num_pages > 1 %}
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <span class="small text-secondary">Page {{ recent_votes.number }} of {{ recent_votes.paginator.num_pages }}</span>
+                        <div class="d-flex gap-2">
+                            {% if recent_votes.has_previous %}
+                                <a class="btn btn-sm btn-outline-secondary" href="?recent_page={{ recent_votes.previous_page_number }}"><i class="bi bi-chevron-left"></i></a>
+                            {% else %}
+                                <button class="btn btn-sm btn-outline-secondary" type="button" disabled><i class="bi bi-chevron-left"></i></button>
+                            {% endif %}
+
+                            {% if recent_votes.has_next %}
+                                <a class="btn btn-sm btn-outline-secondary" href="?recent_page={{ recent_votes.next_page_number }}"><i class="bi bi-chevron-right"></i></a>
+                            {% else %}
+                                <button class="btn btn-sm btn-outline-secondary" type="button" disabled><i class="bi bi-chevron-right"></i></button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
