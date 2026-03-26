@@ -119,12 +119,13 @@ def admin_logout_view(request):
 
 @superuser_required
 def admin_dashboard_view(request):
-    polls = Poll.objects.prefetch_related("choices").order_by("-created_at")
+    poll_queryset = Poll.objects.prefetch_related("choices").order_by("-created_at")
+    poll_paginator = Paginator(poll_queryset, 5)
     recent_vote_queryset = Vote.objects.select_related("poll", "choice").order_by("-voted_at")
     recent_vote_paginator = Paginator(recent_vote_queryset, 3)
     context = {
-        "polls": polls,
-        "poll_count": polls.count(),
+        "polls": poll_paginator.get_page(request.GET.get("poll_page")),
+        "poll_count": poll_queryset.count(),
         "choice_count": Choice.objects.count(),
         "vote_count": Vote.objects.count(),
         "recent_votes": recent_vote_paginator.get_page(request.GET.get("recent_page")),
