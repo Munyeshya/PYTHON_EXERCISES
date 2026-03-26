@@ -4,32 +4,32 @@
 
 {% block content %}
 <section class="portal-card card mb-4">
-    <div class="card-body p-4 p-lg-5">
+    <div class="card-body p-4">
         <div class="row g-4 align-items-center">
             <div class="col-lg-4">
                 <img
                     src="{% if poll.cover_image %}{{ poll.cover_image }}{% else %}https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg{% endif %}"
                     alt="{{ poll.title }}"
                     class="img-fluid rounded-4 w-100"
-                    style="max-height: 280px; object-fit: cover;"
+                    style="max-height: 230px; object-fit: cover;"
                 >
             </div>
             <div class="col-lg-8">
-                <p class="section-tag mb-1">Poll Management</p>
-                <h1 class="h2 mb-3">{{ poll.title }}</h1>
-                <p class="text-secondary">{{ poll.description }}</p>
-                <div class="d-flex flex-wrap gap-3 mb-4 small text-secondary">
-                    <span>Choices: {{ poll.choices.count }}</span>
-                    <span>Total votes: {{ poll.total_votes }}</span>
-                    <span>Ends: {{ poll.end_date|date:"M d, Y H:i" }}</span>
+                <p class="section-tag mb-1"><i class="bi bi-sliders me-1"></i>Poll Control</p>
+                <h1 class="h4 mb-2">{{ poll.title }}</h1>
+                <p class="text-secondary small-copy">{{ poll.description }}</p>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <span class="compact-badge"><i class="bi bi-list-check"></i>{{ poll.choices.count }} choice{{ poll.choices.count|pluralize }}</span>
+                    <span class="compact-badge"><i class="bi bi-people"></i>{{ poll.total_votes }} vote{{ poll.total_votes|pluralize }}</span>
+                    <span class="compact-badge"><i class="bi bi-clock"></i>{{ poll.end_date|date:"M d, Y H:i" }}</span>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
-                    <a class="btn btn-ulk" href="{% url 'polls:admin-choice-create' poll.pk %}">Add Choice</a>
-                    <a class="btn btn-outline-success" href="{% url 'polls:admin-poll-update' poll.pk %}">Edit Poll</a>
-                    <a class="btn btn-outline-primary" href="{% url 'polls:poll-detail' poll.pk %}">View Public Page</a>
+                    <a class="btn btn-ulk btn-sm" href="{% url 'polls:admin-choice-create' poll.pk %}"><i class="bi bi-plus-circle me-1"></i>Add Choice</a>
+                    <a class="btn btn-outline-success btn-sm" href="{% url 'polls:admin-poll-update' poll.pk %}"><i class="bi bi-pencil me-1"></i>Edit Poll</a>
+                    <a class="btn btn-outline-primary btn-sm" href="{% url 'polls:poll-detail' poll.pk %}"><i class="bi bi-eye me-1"></i>Public View</a>
                     <form method="post" action="{% url 'polls:admin-poll-delete' poll.pk %}" onsubmit="return confirm('Delete this poll and all related data?');">
                         {% csrf_token %}
-                        <button class="btn btn-outline-danger" type="submit">Delete Poll</button>
+                        <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash me-1"></i>Delete Poll</button>
                     </form>
                 </div>
             </div>
@@ -41,29 +41,30 @@
     <div class="col-lg-7">
         <div class="portal-card card">
             <div class="card-body p-4">
-                <p class="section-tag mb-1">Choices</p>
-                <h2 class="h4 mb-4">Voting options</h2>
+                <p class="section-tag mb-1"><i class="bi bi-ui-radios-grid me-1"></i>Choices</p>
+                <h2 class="h5 mb-4">Available options</h2>
                 {% for choice in poll.choices.all %}
+                    {% widthratio choice.votes total_votes_safe 100 as choice_percent %}
                     <div class="border rounded-4 p-3 mb-3">
                         <div class="d-flex justify-content-between align-items-center gap-3">
                             <div>
                                 <div class="fw-semibold">{{ choice.text }}</div>
-                                <div class="small text-secondary">{{ choice.votes }} vote{{ choice.votes|pluralize }}</div>
+                                <div class="small text-secondary">{{ choice.votes }} vote{{ choice.votes|pluralize }} • {{ choice_percent }}%</div>
                             </div>
                             <div class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-success" href="{% url 'polls:admin-choice-update' choice.pk %}">Edit</a>
+                                <a class="btn btn-sm btn-outline-success" href="{% url 'polls:admin-choice-update' choice.pk %}"><i class="bi bi-pencil-square me-1"></i>Edit</a>
                                 <form method="post" action="{% url 'polls:admin-choice-delete' choice.pk %}" onsubmit="return confirm('Delete this choice?');">
                                     {% csrf_token %}
-                                    <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                                    <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash me-1"></i>Delete</button>
                                 </form>
                             </div>
                         </div>
                         <div class="progress mt-3" style="height: 10px;">
-                            <div class="progress-bar bg-success" style="width: {% widthratio choice.votes total_votes_safe 100 %}%"></div>
+                            <div class="progress-bar bg-success" style="width: {% widthratio choice.votes total_votes_safe 100 %}%">{{ choice_percent }}%</div>
                         </div>
                     </div>
                 {% empty %}
-                    <p class="text-secondary mb-0">No choices added yet.</p>
+                    <p class="text-secondary small-copy mb-0">No options have been added to this poll yet.</p>
                 {% endfor %}
             </div>
         </div>
@@ -71,16 +72,16 @@
     <div class="col-lg-5">
         <div class="portal-card card">
             <div class="card-body p-4">
-                <p class="section-tag mb-1">Vote Log</p>
-                <h2 class="h4 mb-4">Submitted roll numbers</h2>
+                <p class="section-tag mb-1"><i class="bi bi-receipt me-1"></i>Vote Log</p>
+                <h2 class="h5 mb-4">Recorded submissions</h2>
                 {% for vote in votes %}
                     <div class="border rounded-4 p-3 mb-3">
-                        <div class="fw-semibold">{{ vote.roll_number }}</div>
+                        <div class="fw-semibold"><i class="bi bi-person-vcard me-1"></i>{{ vote.roll_number }}</div>
                         <div class="small text-secondary">Choice: {{ vote.choice.text }}</div>
-                        <div class="small text-secondary">Time: {{ vote.voted_at|date:"M d, Y H:i" }}</div>
+                        <div class="small text-secondary">Submitted: {{ vote.voted_at|date:"M d, Y H:i" }}</div>
                     </div>
                 {% empty %}
-                    <p class="text-secondary mb-0">No votes have been submitted for this poll yet.</p>
+                    <p class="text-secondary small-copy mb-0">No submissions have been recorded yet.</p>
                 {% endfor %}
             </div>
         </div>

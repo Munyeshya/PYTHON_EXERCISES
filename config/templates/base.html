@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ULK Polling Hub{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
             --ulk-green: #0f6b3c;
@@ -15,12 +19,17 @@
             --ulk-light: #f8fafc;
         }
 
+        html {
+            font-size: 14px;
+        }
+
         body {
             background:
                 linear-gradient(rgba(11, 34, 57, 0.84), rgba(11, 34, 57, 0.78)),
                 url("https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg") center/cover fixed;
             color: #102133;
             min-height: 100vh;
+            font-family: "Manrope", sans-serif;
         }
 
         .page-shell {
@@ -34,15 +43,15 @@
         }
 
         .brand-logo {
-            width: 170px;
+            width: 148px;
             max-width: 100%;
         }
 
         .hero-panel,
         .content-card {
             border: 0;
-            border-radius: 1.25rem;
-            box-shadow: 0 1rem 2.5rem rgba(15, 23, 42, 0.12);
+            border-radius: 1rem;
+            box-shadow: 0 0.8rem 2rem rgba(15, 23, 42, 0.1);
         }
 
         .hero-panel {
@@ -52,11 +61,20 @@
             color: white;
         }
 
+        .hero-panel h1,
+        .content-card h1,
+        .content-card h2,
+        .content-card h3 {
+            letter-spacing: -0.02em;
+        }
+
         .btn-brand {
             background-color: var(--ulk-gold);
             border-color: var(--ulk-gold);
             color: #1f2937;
             font-weight: 600;
+            border-radius: 999px;
+            padding-inline: 1rem;
         }
 
         .btn-brand:hover {
@@ -92,14 +110,55 @@
 
         .choice-row {
             border: 1px solid rgba(15, 107, 60, 0.12);
-            border-radius: 1rem;
-            padding: 1rem;
+            border-radius: 0.9rem;
+            padding: 0.85rem 0.95rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .choice-row:hover {
             transform: translateY(-2px);
             box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+        }
+
+        .compact-meta {
+            font-size: 0.82rem;
+        }
+
+        .metric-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(15, 107, 60, 0.08);
+            color: var(--ulk-deep);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .progress {
+            border-radius: 999px;
+            overflow: hidden;
+            background-color: rgba(15, 107, 60, 0.08);
+        }
+
+        .progress-bar {
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.85rem;
+        }
+
+        .form-check-input {
+            margin-top: 0.18rem;
+        }
+
+        .small-copy {
+            font-size: 0.88rem;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -110,15 +169,15 @@
             <div class="container py-2">
                 <a class="navbar-brand d-flex align-items-center gap-3 text-white" href="{% url 'polls:poll-list' %}">
                     <img class="brand-logo" src="https://ulk.ac.rw/wp-content/uploads/2016/06/imageedit_1_4457785095.png" alt="ULK logo">
-                    <span class="fw-semibold d-none d-md-inline">Polling Hub</span>
+                    <span class="fw-semibold d-none d-md-inline"><i class="bi bi-bar-chart-line me-1"></i>Polling Hub</span>
                 </a>
                 <div class="ms-auto">
-                    <a class="btn btn-brand" href="{% url 'polls:admin-login' %}">Admin Portal</a>
+                    <a class="btn btn-brand btn-sm" href="{% url 'polls:admin-login' %}"><i class="bi bi-shield-lock me-1"></i>Admin Portal</a>
                 </div>
             </div>
         </nav>
 
-        <main class="container py-5">
+        <main class="container py-4">
             {% if messages %}
                 <div class="mb-4">
                     {% for message in messages %}

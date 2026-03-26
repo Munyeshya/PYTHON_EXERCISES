@@ -3,31 +3,31 @@
 {% block title %}Polls | ULK Polling Hub{% endblock %}
 
 {% block content %}
-<section class="hero-panel p-4 p-lg-5 mb-5">
-        <div class="row align-items-center g-4">
+<section class="hero-panel p-4 mb-4">
+    <div class="row align-items-center g-4">
         <div class="col-lg-8">
-            <p class="section-label text-warning mb-2">Campus Engagement</p>
-            <h1 class="display-5 fw-bold">Vote in university polls through a simple public portal inspired by the Django tutorial flow.</h1>
-            <p class="lead mb-0">Polls and choices are managed by administrators in Django admin, while students vote here using only their roll number.</p>
+            <p class="section-label text-warning mb-2"><i class="bi bi-megaphone me-1"></i>Student Voting</p>
+            <h1 class="h2 fw-bold mb-2">Choose an active poll and submit your vote.</h1>
+            <p class="small-copy mb-0">Use your roll number once per poll to record your selection.</p>
         </div>
         <div class="col-lg-4 text-lg-end">
-            <a href="{% url 'polls:admin-login' %}" class="btn btn-brand btn-lg">Admin Portal</a>
+            <a href="{% url 'polls:admin-login' %}" class="btn btn-brand btn-sm"><i class="bi bi-box-arrow-in-right me-1"></i>Admin Portal</a>
         </div>
     </div>
 </section>
 
 <section class="content-card card">
-    <div class="card-body p-4 p-lg-5">
+    <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <p class="section-label mb-1">All Polls</p>
-                <h2 class="h3 mb-0">Available ballots</h2>
+                <p class="section-label mb-1"><i class="bi bi-list-task me-1"></i>Available Polls</p>
+                <h2 class="h5 mb-0">Open and recent ballots</h2>
             </div>
-            <span class="text-secondary">{{ polls|length }} poll{{ polls|length|pluralize }}</span>
+            <span class="metric-chip"><i class="bi bi-collection"></i>{{ polls|length }} poll{{ polls|length|pluralize }}</span>
         </div>
 
         {% if polls %}
-            <div class="row g-4">
+            <div class="row g-3">
                 {% for poll in polls %}
                     <div class="col-md-6 col-xl-4">
                         <div class="card h-100 border-0 shadow-sm">
@@ -35,21 +35,21 @@
                                 src="{% if poll.cover_image %}{{ poll.cover_image }}{% else %}https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg{% endif %}"
                                 class="card-img-top"
                                 alt="{{ poll.title }}"
-                                style="height: 220px; object-fit: cover;"
+                                style="height: 190px; object-fit: cover;"
                             >
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
                                     <span class="status-badge {% if poll.is_active %}status-active{% else %}status-closed{% endif %}">
-                                        {% if poll.is_active %}Active{% else %}Closed{% endif %}
+                                        <i class="bi {% if poll.is_active %}bi-broadcast-pin{% else %}bi-pause-circle{% endif %} me-1"></i>{% if poll.is_active %}Active{% else %}Closed{% endif %}
                                     </span>
-                                    <small class="text-secondary">{{ poll.total_votes }} vote{{ poll.total_votes|pluralize }}</small>
+                                    <small class="text-secondary compact-meta"><i class="bi bi-person-check me-1"></i>{{ poll.total_votes }} vote{{ poll.total_votes|pluralize }}</small>
                                 </div>
-                                <h3 class="h5">{{ poll.title }}</h3>
-                                <p class="text-secondary">{{ poll.description|truncatechars:120 }}</p>
-                                <p class="small text-secondary mb-0">Ends: {{ poll.end_date|date:"M d, Y H:i" }}</p>
+                                <h3 class="h6 mb-2">{{ poll.title }}</h3>
+                                <p class="text-secondary small-copy mb-3">{{ poll.description|truncatechars:96 }}</p>
+                                <p class="small text-secondary mb-0"><i class="bi bi-clock me-1"></i>Closes {{ poll.end_date|date:"M d, Y H:i" }}</p>
                             </div>
-                            <div class="card-footer bg-white border-0 px-4 pb-4 pt-0">
-                                <a href="{{ poll.get_absolute_url }}" class="btn btn-outline-success w-100">Open poll</a>
+                            <div class="card-footer bg-white border-0 px-3 pb-3 pt-0">
+                                <a href="{{ poll.get_absolute_url }}" class="btn btn-outline-success btn-sm w-100"><i class="bi bi-arrow-right-circle me-1"></i>Open Poll</a>
                             </div>
                         </div>
                     </div>
@@ -57,9 +57,9 @@
             </div>
         {% else %}
             <div class="text-center py-5">
-                <h3 class="h4">No polls yet</h3>
-                <p class="text-secondary">An administrator can publish a poll from the custom admin portal or the default Django admin.</p>
-                <a href="{% url 'polls:admin-login' %}" class="btn btn-brand">Open Portal</a>
+                <h3 class="h5">No polls available right now</h3>
+                <p class="text-secondary small-copy">Please check again later for a new voting session.</p>
+                <a href="{% url 'polls:admin-login' %}" class="btn btn-brand btn-sm"><i class="bi bi-shield-check me-1"></i>Admin Sign In</a>
             </div>
         {% endif %}
     </div>

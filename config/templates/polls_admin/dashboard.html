@@ -3,44 +3,44 @@
 {% block title %}Dashboard | ULK Polling Portal{% endblock %}
 
 {% block content %}
-<section class="portal-card hero-strip p-4 p-lg-5 mb-5">
+<section class="portal-card hero-strip p-4 mb-4">
     <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-center">
         <div>
-            <p class="text-uppercase fw-bold mb-2" style="letter-spacing: .08em; color: #f4c542;">Admin Workspace</p>
-            <h1 class="display-6 fw-bold mb-3">Manage polls without touching the default Django admin.</h1>
-            <p class="lead mb-0">Create ballots, edit choices, and review voting activity from this custom portal.</p>
+            <p class="text-uppercase fw-bold mb-2" style="letter-spacing: .08em; color: #f4c542;"><i class="bi bi-grid-1x2 me-1"></i>Dashboard</p>
+            <h1 class="h2 fw-bold mb-2">Create polls, update options, and monitor voting.</h1>
+            <p class="small-copy mb-0">Use this workspace to manage every poll from one place.</p>
         </div>
         <div>
-            <a href="{% url 'polls:admin-poll-create' %}" class="btn btn-ulk btn-lg">Create Poll</a>
+            <a href="{% url 'polls:admin-poll-create' %}" class="btn btn-ulk btn-sm"><i class="bi bi-plus-circle me-1"></i>Create Poll</a>
         </div>
     </div>
 </section>
 
-<section class="row g-4 mb-5">
+<section class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="portal-card card h-100">
-            <div class="card-body p-4">
-                <p class="section-tag mb-2">Polls</p>
-                <h2 class="display-6 fw-bold">{{ poll_count }}</h2>
-                <p class="text-secondary mb-0">Published and draft polls managed in the portal.</p>
+            <div class="card-body p-3">
+                <p class="section-tag mb-2"><i class="bi bi-ui-checks me-1"></i>Polls</p>
+                <h2 class="h2 fw-bold">{{ poll_count }}</h2>
+                <p class="text-secondary small-copy mb-0">Total polls available for management.</p>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="portal-card card h-100">
-            <div class="card-body p-4">
-                <p class="section-tag mb-2">Choices</p>
-                <h2 class="display-6 fw-bold">{{ choice_count }}</h2>
-                <p class="text-secondary mb-0">Available answer options across all polls.</p>
+            <div class="card-body p-3">
+                <p class="section-tag mb-2"><i class="bi bi-list-check me-1"></i>Choices</p>
+                <h2 class="h2 fw-bold">{{ choice_count }}</h2>
+                <p class="text-secondary small-copy mb-0">Answer options across all polls.</p>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="portal-card card h-100">
-            <div class="card-body p-4">
-                <p class="section-tag mb-2">Votes</p>
-                <h2 class="display-6 fw-bold">{{ vote_count }}</h2>
-                <p class="text-secondary mb-0">Recorded student votes linked to roll numbers.</p>
+            <div class="card-body p-3">
+                <p class="section-tag mb-2"><i class="bi bi-person-check me-1"></i>Votes</p>
+                <h2 class="h2 fw-bold">{{ vote_count }}</h2>
+                <p class="text-secondary small-copy mb-0">Submitted votes stored with roll numbers.</p>
             </div>
         </div>
     </div>
@@ -49,12 +49,12 @@
 <section class="row g-4">
     <div class="col-lg-8">
         <div class="portal-card card">
-            <div class="card-body p-4 p-lg-5">
-                <p class="section-tag mb-1">Poll Directory</p>
-                <h2 class="h3 mb-4">All polls</h2>
+            <div class="card-body p-4">
+                <p class="section-tag mb-1"><i class="bi bi-folder2-open me-1"></i>Poll Directory</p>
+                <h2 class="h5 mb-4">All polls</h2>
                 {% if polls %}
                     <div class="table-responsive">
-                        <table class="table align-middle">
+                        <table class="table table-sm align-middle">
                             <thead>
                                 <tr>
                                     <th>Title</th>
@@ -83,7 +83,7 @@
                                         <td>{{ poll.choices.count }}</td>
                                         <td>{{ poll.total_votes }}</td>
                                         <td class="text-end">
-                                            <a class="btn btn-sm btn-outline-success" href="{% url 'polls:admin-poll-detail' poll.pk %}">Open</a>
+                                            <a class="btn btn-sm btn-outline-success" href="{% url 'polls:admin-poll-detail' poll.pk %}"><i class="bi bi-arrow-right-circle me-1"></i>Open</a>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -91,7 +91,7 @@
                         </table>
                     </div>
                 {% else %}
-                    <p class="text-secondary mb-0">No polls have been created yet.</p>
+                    <p class="text-secondary small-copy mb-0">No polls have been added yet.</p>
                 {% endif %}
             </div>
         </div>
@@ -99,16 +99,16 @@
     <div class="col-lg-4">
         <div class="portal-card card h-100">
             <div class="card-body p-4">
-                <p class="section-tag mb-1">Recent Activity</p>
-                <h2 class="h4 mb-4">Latest votes</h2>
+                <p class="section-tag mb-1"><i class="bi bi-clock-history me-1"></i>Recent Votes</p>
+                <h2 class="h5 mb-4">Latest submissions</h2>
                 {% for vote in recent_votes %}
                     <div class="border rounded-4 p-3 mb-3">
-                        <div class="fw-semibold">{{ vote.roll_number }}</div>
+                        <div class="fw-semibold"><i class="bi bi-person-vcard me-1"></i>{{ vote.roll_number }}</div>
                         <div class="small text-secondary">{{ vote.poll.title }}</div>
-                        <div class="small text-secondary">Selected: {{ vote.choice.text }}</div>
+                        <div class="small text-secondary">Choice: {{ vote.choice.text }}</div>
                     </div>
                 {% empty %}
-                    <p class="text-secondary mb-0">Votes will appear here once students start participating.</p>
+                    <p class="text-secondary small-copy mb-0">Recent submissions will appear here.</p>
                 {% endfor %}
             </div>
         </div>

@@ -4,31 +4,31 @@
 
 {% block content %}
 <section class="content-card card mb-4">
-    <div class="card-body p-4 p-lg-5">
+    <div class="card-body p-4">
         <div class="row g-4 align-items-center">
             <div class="col-lg-4">
                 <img
                     src="{% if poll.cover_image %}{{ poll.cover_image }}{% else %}https://ulk.ac.rw/wp-content/uploads/2012/05/May-Intake-2026-scaled.jpg{% endif %}"
                     alt="{{ poll.title }}"
                     class="img-fluid rounded-4 shadow-sm w-100"
-                    style="max-height: 280px; object-fit: cover;"
+                    style="max-height: 240px; object-fit: cover;"
                 >
             </div>
             <div class="col-lg-8">
                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-4">
                     <div>
-                        <p class="section-label mb-2">Poll Overview</p>
-                        <h1 class="display-6 fw-bold mb-3">{{ poll.title }}</h1>
-                        <p class="lead text-secondary">{{ poll.description }}</p>
-                        <div class="d-flex flex-wrap gap-3 small text-secondary">
-                            <span>Starts: {{ poll.start_date|date:"M d, Y H:i" }}</span>
-                            <span>Ends: {{ poll.end_date|date:"M d, Y H:i" }}</span>
-                            <span>Total votes: {{ poll.total_votes }}</span>
+                        <p class="section-label mb-2"><i class="bi bi-ui-checks-grid me-1"></i>Poll Details</p>
+                        <h1 class="h2 fw-bold mb-2">{{ poll.title }}</h1>
+                        <p class="small-copy text-secondary mb-3">{{ poll.description }}</p>
+                        <div class="d-flex flex-wrap gap-2 compact-meta">
+                            <span class="metric-chip"><i class="bi bi-calendar-event"></i>{{ poll.start_date|date:"M d, Y H:i" }}</span>
+                            <span class="metric-chip"><i class="bi bi-hourglass-split"></i>{{ poll.end_date|date:"M d, Y H:i" }}</span>
+                            <span class="metric-chip"><i class="bi bi-people"></i>{{ poll.total_votes }} vote{{ poll.total_votes|pluralize }}</span>
                         </div>
                     </div>
                     <div class="d-flex flex-column gap-2">
-                        <a href="{% url 'polls:poll-results' poll.pk %}" class="btn btn-outline-success">View Results</a>
-                        <a href="{% url 'polls:admin-login' %}" class="btn btn-outline-primary">Admin Portal</a>
+                        <a href="{% url 'polls:poll-results' poll.pk %}" class="btn btn-outline-success btn-sm"><i class="bi bi-bar-chart me-1"></i>View Results</a>
+                        <a href="{% url 'polls:admin-login' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-gear me-1"></i>Admin Portal</a>
                     </div>
                 </div>
             </div>
@@ -42,11 +42,11 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <p class="section-label mb-1">Voting Panel</p>
-                        <h2 class="h4 mb-0">Cast a vote</h2>
+                        <p class="section-label mb-1"><i class="bi bi-check2-square me-1"></i>Vote</p>
+                        <h2 class="h5 mb-0">Submit your choice</h2>
                     </div>
                     <span class="status-badge {% if poll.is_active %}status-active{% else %}status-closed{% endif %}">
-                        {% if poll.is_active %}Active{% else %}Closed{% endif %}
+                        <i class="bi {% if poll.is_active %}bi-broadcast-pin{% else %}bi-pause-circle{% endif %} me-1"></i>{% if poll.is_active %}Active{% else %}Closed{% endif %}
                     </span>
                 </div>
 
@@ -56,22 +56,26 @@
                         <div class="mb-4">
                             <label for="roll-number" class="form-label fw-semibold">Roll Number</label>
                             <input type="text" class="form-control" id="roll-number" name="roll_number" placeholder="Enter your student roll number" required>
-                            <div class="form-text">No user login is required. Each roll number can vote once per poll.</div>
+                            <div class="form-text small-copy">Each roll number can vote once in this poll.</div>
                         </div>
                         <div class="d-grid gap-3 mb-4">
                             {% for choice in poll.choices.all %}
+                                {% widthratio choice.votes total_votes_safe 100 as choice_percent %}
                                 <label class="choice-row">
-                                    <div class="form-check">
+                                    <div class="d-flex justify-content-between align-items-start gap-3">
+                                        <div class="form-check mb-0">
                                         <input class="form-check-input" type="radio" name="choice" value="{{ choice.pk }}" id="choice-{{ choice.pk }}" {% if not poll.is_active %}disabled{% endif %}>
-                                        <span class="form-check-label ms-2 fw-semibold" for="choice-{{ choice.pk }}">{{ choice.text }}</span>
+                                            <span class="form-check-label ms-2 fw-semibold" for="choice-{{ choice.pk }}">{{ choice.text }}</span>
+                                        </div>
+                                        <span class="badge text-bg-light">{{ choice_percent }}%</span>
                                     </div>
                                 </label>
                             {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-brand" {% if not poll.is_active %}disabled{% endif %}>Submit Vote</button>
+                        <button type="submit" class="btn btn-brand btn-sm" {% if not poll.is_active %}disabled{% endif %}><i class="bi bi-send-check me-1"></i>Submit Vote</button>
                     </form>
                 {% else %}
-                    <p class="text-secondary mb-0">This poll has no choices yet. Add one to begin collecting responses.</p>
+                    <p class="text-secondary small-copy mb-0">This poll is not ready for voting yet.</p>
                 {% endif %}
             </div>
         </section>
@@ -80,14 +84,15 @@
     <div class="col-lg-5">
         <section class="content-card card h-100">
             <div class="card-body p-4">
-                <p class="section-label mb-1">How It Works</p>
-                <h2 class="h4 mb-4">Public voting, admin-managed polls</h2>
+                <p class="section-label mb-1"><i class="bi bi-pie-chart me-1"></i>Live Summary</p>
+                <h2 class="h5 mb-4">Current response levels</h2>
 
                 {% for choice in poll.choices.all %}
+                    {% widthratio choice.votes total_votes_safe 100 as choice_percent %}
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-2">
                             <span class="fw-semibold">{{ choice.text }}</span>
-                            <span class="text-secondary">{{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
+                            <span class="text-secondary compact-meta">{{ choice.votes }} vote{{ choice.votes|pluralize }} • {{ choice_percent }}%</span>
                         </div>
                         <div class="progress" style="height: 10px;">
                             <div
@@ -97,12 +102,12 @@
                                 aria-valuenow="{{ choice.votes }}"
                                 aria-valuemin="0"
                                 aria-valuemax="{{ total_votes_safe }}"
-                            ></div>
+                            >{{ choice_percent }}%</div>
                         </div>
-                        <div class="small text-secondary mt-2">Option performance updates automatically after each valid vote.</div>
+                        <div class="small text-secondary mt-2">Updated whenever a valid vote is recorded.</div>
                     </div>
                 {% empty %}
-                    <p class="text-secondary mb-0">Results will appear here once choices have been added.</p>
+                    <p class="text-secondary small-copy mb-0">Results will appear here after options are added.</p>
                 {% endfor %}
             </div>
         </section>
