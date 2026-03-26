@@ -48,7 +48,7 @@ class Choice(models.Model):
 
 class Vote(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name="votes")
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE, related_name="votes")
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE, related_name="ballots")
     roll_number = models.CharField(max_length=50)
     voted_at = models.DateTimeField(auto_now_add=True)
 

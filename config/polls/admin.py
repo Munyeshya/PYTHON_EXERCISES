@@ -15,6 +15,9 @@ class VoteInline(admin.TabularInline):
     can_delete = False
     fields = ("roll_number", "choice", "voted_at")
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(Poll)
 class PollAdmin(admin.ModelAdmin):
